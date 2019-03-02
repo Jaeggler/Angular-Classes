@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="row justify-content-center">
+
+    <div class="card col-6 mt-3 p-3">
+      <h3 class="card-title">Registro</h3>
+
+    <form [formGroup] = "grupo" (ngSubmit)="registrar()">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Nombre completo" name="nombreCompleto"
+        formControlName = "nombreCompleto" >
+        <span *ngIf="grupo.get('nombreCompleto').touched &&
+         grupo.get('nombreCompleto').hasError('required')">El nombre es obligatorio</span>
+      </div>
+      <div class="form-group">
+        <input type="email" class="form-control" placeholder="Correo" name="correo"
+        formControlName = "correo" >
+        <span *ngIf="grupo.get('correo').touched && grupo.get('correo').hasError('required')">El correo es obligatorio</span>
+        <span *ngIf="grupo.get('correo').touched && grupo.get('correo').hasError('email')">No tiene formato de correo</span>
+        <span *ngIf="grupo.get('correo').touched && grupo.get('correo').hasError('email')">Tiene que ser un correo empresarial</span>
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control" placeholder="Contraseña" name="contrasena"
+        formControlName = "contrasena" >
+        <span *ngIf="grupo.get('contrasena').touched && grupo.get('contrasena').hasError('required')">La constraseña es obligatorio</span>
+        <span *ngIf="grupo.get('contrasena').touched && grupo.get('contrasena').hasError('minlength')">Minimo 6 caracteres</span>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-success">Registrar</button>
+      </div>
+    </form>
+
+    </div>
+  </div>
+</div>
