@@ -79,3 +79,5 @@ validadorConfirmacionContrasena (control: AbstractControl): {[s:string]:boolean}
     console.log(this.grupo)
   }
 }
+
+//test comment
