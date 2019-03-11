@@ -1,3 +1,5 @@
+//PROMESAS
+
 // import { Component } from '@angular/core';
 
 // @Component({
@@ -100,8 +102,12 @@
 //       error => console.log(error)
 //     )
 //   }
+
+
+//OBSERVABLES
 import { Component } from '@angular/core';
 import { Observable, Observer, Subscription } from 'rxjs';
+import {map } from "rxjs/operators"
 
 @Component({
   selector: 'app-root',
@@ -112,56 +118,97 @@ export class AppComponent {
 
 suscripcion: Subscription;
 
-  ajax(url, resolve, reject) {
-    const xhr = new XMLHttpRequest()
 
-    xhr.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        resolve(JSON.parse(xhr.responseText))
-      } else if (this.readyState == 4) {
-        reject({ status: this.status, message: this.statusText })
-      }
-    }
-
-    xhr.open("get", url, true)
-    xhr.send()
-  }
+convertirAJson(texto): Object { //metodo para convertir los datos de entrada en JSON
+  return JSON.parse(texto);
+}
 
 ngOnInit(){
   const observable: Observable<string> = Observable.create(
     (observador: Observer<string>) =>{
-      setTimeout(()=>{
-        observador.next("A los 3 segundos vino el del periodico") //metodo next siempre manda data
-      }, 3000);
-      setTimeout(()=>{
-        //observador.next("A los 5 segundos alguien toco la puerta")
-        //observador.error("Me siento mal, me voy")
-      },5000);
-      setTimeout(()=>{
-        //observador.next("A los 10 segundos se fue la luz")
-        observador.complete()
-      },10000)
-      setTimeout(()=>{
-        //observador.next("A los 10 segundos se fue la luz")
-        observador.next("Volvi")
-      },12000)
+      const self = this;
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (this.readyState==4 && this.status == 200) {
+
+          // let datos: any = self.convertirAJson(xhr.responseText);
+          // datos = datos.map(dato => {dato.name = dato.name.toUpperCase()
+          //   return dato
+          // })
+          // datos = datos.filter(dato => dato.id > 4)
+
+
+          observador.next(xhr.responseText)
+        }else if (this.readyState == 4) {
+          observador.error(this.statusText)
+        }
+      }
+
+      xhr.open("get", "http://jsonplaceholder.typicode.com/users", true)
+      xhr.send()
     } 
 
   )
 
-  const metodos = {
-    next: mensaje => console.log(mensaje),
-    error: error => console.log(error),
-    complete: () => console.log("fin")
+  // const metodos = {
+  //   next: mensaje => console.log(mensaje),
+  //   error: error => console.log(error),
+  //   complete: () => console.log("fin")
 
-  }
-    // this.suscripcion = observable.subscribe(
-    //   mensaje => console.log(mensaje),
-    //   error => console.log(error),
-    //   () => console.log("Termine mi jornada")
-    // )
+  // }
 
-  this.suscripcion = observable.subscribe(metodos);
+    this.suscripcion = observable
+    .pipe(
+      map((data:any) => {
+        return JSON.parse(data);
+      }),
+      map(data => {
+        const resp = data.map(dato => {
+          dato.name = dato.name.toUpperCase();
+          return dato;
+        })
+        return resp;
+      }),
+      map(data => {
+        return data.filter(dato => dato.id >4)
+      })
+    )
+    .subscribe(
+      mensaje => {
+
+        console.table(mensaje)
+      },
+      error => console.log(error),
+      () => console.log("Termine mi jornada")
+    )
+
+  //this.suscripcion = observable.subscribe(metodos);
+  const observable2 = Observable.create(
+    (observador: Observer<any>) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status ==20){
+          observador.complete()
+        }else if (this.readyState == 3){
+          observador.next(xhr.response.lenght)
+        }
+      }
+      xhr.open("get", "/descargar/wordpress.zip", true)
+    xhr.send()
+    }
+           
+    )
+
+    observable2
+    .subscribe(
+      data => console.log(data),
+      error => console.log(error),
+      complete => console.log("Archivo descargado")
+    )
+}
+ngOnDestroy(){
+this.suscripcion.unsubscribe()
+
 }
 
 }
