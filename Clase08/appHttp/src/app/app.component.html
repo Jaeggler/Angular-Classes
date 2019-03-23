@@ -1,0 +1,45 @@
+<div class="col-6 justify-content-center">
+<table class="table table-bordered">
+  <thead class="thead-dark">
+      <th scope="col">IdCurso</th>
+      <th scope="col">Titulo</th>
+  </thead>
+  <tbody>
+  <tr *ngFor="let curso of listadoCursos | async">
+    <td>{{curso.idCurso}}</td>
+    <td>{{curso.titulo}}</td>
+    <td>
+      <button class="btn btn-danger" (click)="eliminar(curso)">Eliminar</button>
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
+
+<form class="col-6" [formGroup]="grupo">
+  <div class="form-group">
+      <input type="text" class="Titulo" formControlName="titulo" name="titulo" class="form-control">
+  </div>
+  <div class="d-flex justify-content-center">
+    <button type="button" [disabled] ="grupo.invalid" class="btn btn-block btn-primary" (click)="ingresar()">Ingresar</button>
+  </div>
+</form>
+
+
+
+<!-- <hr>
+<table class="table">
+    <thead class="thead-dark">
+        <th scope="col">IdCurso</th>
+        <th scope="col">Name</th>
+        <th scope="col">UserName</th>
+    </thead>
+    <tbody>
+  <tr *ngFor="let user of listadoUsers">
+    <td>{{user.id}}</td>
+    <td>{{user.name}}</td>
+    <td>{{user.username}}</td>
+  </tr>
+</tbody>
+</table> -->
+
